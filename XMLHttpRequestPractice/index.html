@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitHub Profile Card</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-900 min-h-screen flex items-center justify-center p-4">
+    <div
+      class="bg-gray-800 rounded-lg shadow-2xl max-w-md w-full overflow-hidden border border-gray-700"
+    >
+      <div class="h-32 bg-gradient-to-r from-purple-600 to-blue-600"></div>
+
+      <div class="px-6 pb-6">
+        <!-- Avatar -->
+        <div class="flex justify-center -mt-16 mb-4">
+          <img
+            id="avatar"
+            src=""
+            alt="Profile Avatar"
+            class="w-32 h-32 rounded-full border-4 border-gray-800 shadow-lg"
+          />
+        </div>
+
+        <!-- Name and username -->
+        <div class="text-center mb-4">
+          <h2 id="username" class="text-2xl font-bold text-white"></h2>
+          <p id="userhandle" class="text-gray-400"></p>
+        </div>
+
+        <!-- Bio -->
+        <p id="bio" class="text-gray-300 text-center mb-6"></p>
+
+        <!-- Stats -->
+        <div
+          class="flex justify-around mb-6 py-4 border-t border-b border-gray-700"
+        >
+          <div class="text-center">
+            <div id="repos" class="text-xl font-bold text-white"></div>
+            <div class="text-sm text-gray-400">Repos</div>
+          </div>
+          <div class="text-center">
+            <div id="followers" class="text-xl font-bold text-white"></div>
+            <div class="text-sm text-gray-400">Followers</div>
+          </div>
+          <div class="text-center">
+            <div id="following" class="text-xl font-bold text-white"></div>
+            <div class="text-sm text-gray-400">Following</div>
+          </div>
+        </div>
+
+        <!-- Additional info -->
+        <div class="space-y-2 text-gray-300 text-center">
+          <div id="location"></div>
+          <div id="joined"></div>
+        </div>
+
+        <!-- GitHub button -->
+        <button
+          id="githubLink"
+          class="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200"
+        >
+          View GitHub Profile
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const githubUrl = "https://api.github.com/users/sahiltiwaridev";
+      const xhr = new XMLHttpRequest();
+
+      xhr.open("GET", githubUrl);
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4) {
+          try {
+            const userData = JSON.parse(xhr.responseText);
+
+            document.getElementById("avatar").src = userData.avatar_url;
+            document.getElementById("username").textContent =
+              userData.name || "No Name";
+            document.getElementById("userhandle").textContent =
+              "@" + userData.login;
+            document.getElementById("bio").textContent = userData.bio || "";
+            document.getElementById("repos").textContent =
+              userData.public_repos;
+            document.getElementById("followers").textContent =
+              userData.followers;
+            document.getElementById("following").textContent =
+              userData.following;
+            document.getElementById("location").textContent =
+              userData.location || "";
+            document.getElementById("joined").textContent =
+              "Joined " + new Date(userData.created_at).toLocaleDateString();
+            document.getElementById("githubLink").onclick = () =>
+              window.open(userData.html_url, "_blank");
+          } catch (err) {
+            console.error("Error parsing JSON:", err);
+          }
+        } else {
+          console.error("XHR failed with status:", xhr.status);
+        }
+      };
+
+      xhr.send();
+    </script>
+  </body>
+</html>
