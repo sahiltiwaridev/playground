@@ -1,4 +1,11 @@
 import { createMMKV } from "react-native-mmkv";
 
 export const storage = createMMKV();
-storage.set("user.name", "Sahil");
+
+export function createUser(params: string) {
+  storage.set("user.name", params);
+}
+
+export function deleteUser() {
+  storage.remove("user.name");
+}
