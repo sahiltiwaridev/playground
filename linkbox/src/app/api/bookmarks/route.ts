@@ -1,32 +1,35 @@
+import data from "@/app/lib/store";
+
 export async function GET() {
-  return Response.json([
-    {
-      id: 1,
-      title: "MDN Web Docs",
-      url: "https://developer.mozilla.org/",
-      tag: "documentation",
-      isRead: false,
-    },
-    {
-      id: 2,
-      title: "JavaScript.info",
-      url: "https://javascript.info/",
-      tag: "javascript",
-      isRead: false,
-    },
-    {
-      id: 3,
-      title: "React Documentation",
-      url: "https://react.dev/",
-      tag: "react",
-      isRead: false,
-    },
-    {
-      id: 4,
-      title: "Next.js Documentation",
-      url: "https://nextjs.org/docs",
-      tag: "nextjs",
-      isRead: false,
-    },
-  ]);
+  return Response.json(data);
+}
+
+export async function POST(request: Request) {
+  try {
+    const req = await request.json();
+    if (
+      req.tag.trim() === "" ||
+      req.title.trim() === "" ||
+      req.url.trim() === ""
+    ) {
+      return Response.json(
+        { error: "Title and URL are required" },
+        { status: 400 },
+      );
+    } else {
+      let newBookmarkId;
+      if (data.length === 0) {
+        newBookmarkId = 1;
+      } else {
+        newBookmarkId = data[data.length - 1].id + 1;
+      }
+
+      req.id = newBookmarkId;
+      data.push(req);
+      return Response.json(req, { status: 201 });
+    }
+  } catch (e) {
+    console.error(e);
+    return Response.json({ error: "Invalid request body" }, { status: 400 });
+  }
 }
